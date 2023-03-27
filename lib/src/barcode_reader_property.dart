@@ -16,6 +16,9 @@ class BarcodeReaderProperty<T extends Object> {
 
   static const BarcodeReaderSymbologyProperties symbology =
       BarcodeReaderSymbologyProperties();
+
+  static const BarcodeReaderDataProcessingProperties dataProcessing =
+      BarcodeReaderDataProcessingProperties();
 }
 
 class BarcodeReaderImagerProperties {

@@ -75,6 +75,14 @@ class _ScannerPageState extends State<ScannerPage> {
         if (mounted) setState(() {});
       },
     );
+    _barcodeReader?.setProperties(
+      {
+        BarcodeReaderProperty.trigger.controlMode(
+          TriggerControlMode.autoControl,
+        ),
+        BarcodeReaderProperty.dataProcessing.launchBrowser(false),
+      },
+    );
   }
 
   @override
