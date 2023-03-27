@@ -1,0 +1,26 @@
+name: honeywell_mobility_sdk
+description: The Mobility SDK includes tools and resources that leverage functionality unique to our Honeywell Android mobile computers.
+version: 0.0.1
+homepage: https://acmesoftware.com
+
+environment:
+  sdk: '>=2.19.5 <3.0.0'
+  flutter: ">=2.5.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  pigeon: ^9.1.1
+  plugin_platform_interface: ^2.1.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.1
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.acmesoftware.honeywell_mobility_sdk
+        pluginClass: HoneywellMobilitySdkPlugin
