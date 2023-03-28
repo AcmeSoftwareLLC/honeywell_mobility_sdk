@@ -1,14 +1,18 @@
 package com.acmesoftware.honeywell_mobility_sdk
 
+import android.os.Handler
+import android.os.Looper
 import com.honeywell.aidc.AidcManager
 import com.honeywell.aidc.BarcodeReader
 import io.flutter.plugin.common.BinaryMessenger
+import java.util.concurrent.Executor
 
 class HMSBarcodeReader(messenger: BinaryMessenger) : BarcodeReaderApi,
     BarcodeReader.BarcodeListener, BarcodeReader.TriggerListener {
     private lateinit var reader: BarcodeReader
     private var manager: AidcManager? = null
     private val flutterApi = BarcodeReaderFlutterApi(messenger)
+    private val uiThreadExecutor = UiThreadExecutor()
 
     init {
         BarcodeReaderApi.setUp(messenger, this)
@@ -37,16 +41,21 @@ class HMSBarcodeReader(messenger: BinaryMessenger) : BarcodeReaderApi,
             event.aimId,
             event.timestamp,
         )
-        flutterApi.onBarcodeEvent(readEvent) {}
+
+        uiThreadExecutor.execute { flutterApi.onBarcodeEvent(readEvent) {} }
     }
 
     override fun onFailureEvent(event: com.honeywell.aidc.BarcodeFailureEvent) {
-        flutterApi.onFailureEvent(BarcodeFailureEvent(event.timestamp)) {}
+        uiThreadExecutor.execute {
+            flutterApi.onFailureEvent(BarcodeFailureEvent(event.timestamp)) {}
+        }
     }
 
 
     override fun onTriggerEvent(event: com.honeywell.aidc.TriggerStateChangeEvent) {
-        flutterApi.onTriggerEvent(TriggerStateChangeEvent(event.state)) {}
+        uiThreadExecutor.execute {
+            flutterApi.onTriggerEvent(TriggerStateChangeEvent(event.state)) {}
+        }
     }
 
     override fun aim(on: Boolean) {
@@ -92,5 +101,12 @@ class HMSBarcodeReader(messenger: BinaryMessenger) : BarcodeReaderApi,
 
     override fun softwareTrigger(state: Boolean) {
         reader.softwareTrigger(state)
+    }
+
+    private class UiThreadExecutor : Executor {
+        val handler: Handler = Handler(Looper.getMainLooper())
+        override fun execute(command: Runnable) {
+            handler.post(command)
+        }
     }
 }
