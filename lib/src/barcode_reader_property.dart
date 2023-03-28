@@ -3,7 +3,10 @@ class BarcodeReaderProperty<T extends Object> {
 
   final String key;
 
-  MapEntry<String, T> call(T value) => MapEntry(key, value);
+  MapEntry<String, Object> call(T value) {
+    if (value is Enum) return MapEntry(key, value.name);
+    return MapEntry(key, value);
+  }
 
   static const BarcodeReaderImagerProperties imager =
       BarcodeReaderImagerProperties();

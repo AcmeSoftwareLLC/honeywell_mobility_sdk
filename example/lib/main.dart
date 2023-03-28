@@ -75,29 +75,30 @@ class _ScannerPageState extends State<ScannerPage> {
         if (mounted) setState(() {});
       },
     );
-    _barcodeReader?.setProperties(
-      {
-        BarcodeReaderProperty.trigger.controlMode(
-          TriggerControlMode.autoControl,
-        ),
-        BarcodeReaderProperty.dataProcessing.launchBrowser(false),
-        BarcodeReaderProperty.symbology.aztec(true),
-        BarcodeReaderProperty.symbology.codebar(true),
-        BarcodeReaderProperty.symbology.code39(true),
-        BarcodeReaderProperty.symbology.code93(true),
-        BarcodeReaderProperty.symbology.code128(true),
-        BarcodeReaderProperty.symbology.dataMatrix(true),
-        BarcodeReaderProperty.symbology.ean8(true),
-        BarcodeReaderProperty.symbology.ean13(true),
-        BarcodeReaderProperty.symbology.maxiCode(true),
-        BarcodeReaderProperty.symbology.pdf417(true),
-        BarcodeReaderProperty.symbology.qrCode(true),
-        BarcodeReaderProperty.symbology.rss(true),
-        BarcodeReaderProperty.symbology.rssExpanded(true),
-        BarcodeReaderProperty.symbology.upca(true),
-        BarcodeReaderProperty.symbology.upce(true),
-      },
-    );
+
+    final properties = {
+      BarcodeReaderProperty.trigger.controlMode(
+        TriggerControlMode.autoControl,
+      ),
+      BarcodeReaderProperty.dataProcessing.launchBrowser(false),
+      BarcodeReaderProperty.symbology.aztec(true),
+      BarcodeReaderProperty.symbology.codebar(true),
+      BarcodeReaderProperty.symbology.code39(true),
+      BarcodeReaderProperty.symbology.code93(true),
+      BarcodeReaderProperty.symbology.code128(true),
+      BarcodeReaderProperty.symbology.dataMatrix(true),
+      BarcodeReaderProperty.symbology.ean8(true),
+      BarcodeReaderProperty.symbology.ean13(true),
+      BarcodeReaderProperty.symbology.maxiCode(true),
+      BarcodeReaderProperty.symbology.pdf417(true),
+      BarcodeReaderProperty.symbology.qrCode(true),
+      BarcodeReaderProperty.symbology.rss(true),
+      BarcodeReaderProperty.symbology.rssExpanded(true),
+      BarcodeReaderProperty.symbology.upca(true),
+      BarcodeReaderProperty.symbology.upce(true),
+    };
+    _barcodeReader?.setProperties(properties);
+    print(properties);
   }
 
   @override
