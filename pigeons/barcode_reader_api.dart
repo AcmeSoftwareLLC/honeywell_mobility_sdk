@@ -69,6 +69,11 @@ abstract class BarcodeReaderApi {
   /// {@endtemplate}
   void release();
 
+  /// {@template honeywell.reader.setProperty}
+  /// Sets a property with [key] and [value].
+  /// {@endtemplate}
+  void setProperty<T>(String key, Object value);
+
   /// {@template honeywell.reader.setProperties}
   /// Sets a map of properties.
   /// {@endtemplate}

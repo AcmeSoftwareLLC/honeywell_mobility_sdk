@@ -78,6 +78,14 @@ class HMSBarcodeReader(messenger: BinaryMessenger) : BarcodeReaderApi,
         reader.release()
     }
 
+    override fun setProperty(key: String, value: Any) {
+        when (value) {
+            is Int -> reader.setProperty(key, value)
+            is Boolean -> reader.setProperty(key, value)
+            is String -> reader.setProperty(key, value)
+        }
+    }
+
     override fun setProperties(properties: Map<String, Any>) {
         reader.setProperties(properties)
     }

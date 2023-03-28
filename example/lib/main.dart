@@ -121,7 +121,7 @@ class _ScannerPageState extends State<ScannerPage> {
               : const SizedBox.shrink(),
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -149,6 +149,25 @@ class _ScannerPageState extends State<ScannerPage> {
                   ],
                 ),
               ),
+            ),
+            const SizedBox(height: 16),
+            DropdownMenu(
+              leadingIcon: const Icon(Icons.barcode_reader),
+              label: const Text('Scan Mode'),
+              initialSelection: TriggerScanMode.oneShot,
+              onSelected: (mode) {
+                if (mode != null) {
+                  _invoke(
+                    (reader) => reader.setProperty(
+                      BarcodeReaderProperty.trigger.scanMode(mode),
+                    ),
+                  );
+                }
+              },
+              dropdownMenuEntries: [
+                for (final mode in TriggerScanMode.values)
+                  DropdownMenuEntry(value: mode, label: mode.name),
+              ],
             ),
             const SizedBox(height: 16),
             FilledButton(

@@ -50,6 +50,11 @@ class _ApiLogger implements TestBarcodeReaderApi {
   }
 
   @override
+  void setProperty(String key, Object value) {
+    logs.add('setProperty($key, $value)');
+  }
+
+  @override
   void setProperties(Map<String?, Object?> properties) {
     logs.add('setProperties');
     this.properties = properties.cast();

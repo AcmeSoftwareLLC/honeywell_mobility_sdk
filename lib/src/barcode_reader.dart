@@ -45,6 +45,11 @@ class BarcodeReader implements BarcodeReaderFlutterApi {
   /// {@macro honeywell.reader.release}
   Future<void> release() => _api.release();
 
+  /// {@macro honeywell.reader.setProperty}
+  Future<void> setProperty(BarcodeReaderPropertyEntry property) {
+    return _api.setProperty(property.key, property.value);
+  }
+
   /// {@macro honeywell.reader.setProperties}
   Future<void> setProperties(Set<BarcodeReaderPropertyEntry> properties) {
     return _api.setProperties(
