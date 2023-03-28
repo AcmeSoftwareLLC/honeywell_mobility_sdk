@@ -54,6 +54,7 @@ class _ScannerPageState extends State<ScannerPage> {
   BarcodeReader? _barcodeReader;
   String? data;
   String? error;
+  String? trigger;
   ScannerAction action = ScannerAction.none;
 
   @override
@@ -74,12 +75,14 @@ class _ScannerPageState extends State<ScannerPage> {
         data = null;
         if (mounted) setState(() {});
       },
+      onTrigger: (event) {
+        trigger = event.state ? 'Pressed' : 'Released';
+        if (mounted) setState(() {});
+      },
     );
 
     final properties = {
-      BarcodeReaderProperty.trigger.controlMode(
-        TriggerControlMode.autoControl,
-      ),
+      BarcodeReaderProperty.trigger.controlMode(TriggerControlMode.autoControl),
       BarcodeReaderProperty.dataProcessing.launchBrowser(false),
       BarcodeReaderProperty.symbology.aztec(true),
       BarcodeReaderProperty.symbology.codebar(true),
@@ -98,7 +101,6 @@ class _ScannerPageState extends State<ScannerPage> {
       BarcodeReaderProperty.symbology.upce(true),
     };
     _barcodeReader?.setProperties(properties);
-    print(properties);
   }
 
   @override
@@ -112,6 +114,12 @@ class _ScannerPageState extends State<ScannerPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Scanner Page'),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(2),
+          child: action == ScannerAction.startScanning
+              ? const LinearProgressIndicator(minHeight: 2)
+              : const SizedBox.shrink(),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -128,6 +136,12 @@ class _ScannerPageState extends State<ScannerPage> {
                       'Data: $data',
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Trigger: $trigger',
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    const SizedBox(height: 8),
                     Text(
                       'Error At: $error',
                       style: Theme.of(context).textTheme.labelMedium,
@@ -143,8 +157,11 @@ class _ScannerPageState extends State<ScannerPage> {
                 ScannerAction.release,
               ])
                   ? () async {
-                      await _invoke((reader) => reader.claim());
-                      _updateAction(ScannerAction.claim);
+                      final supported = await _invoke(
+                        (reader) => reader.claim(),
+                      );
+
+                      if (supported) _updateAction(ScannerAction.claim);
                     }
                   : null,
               child: const Text('Claim'),
@@ -204,19 +221,22 @@ class _ScannerPageState extends State<ScannerPage> {
     setState(() {});
   }
 
-  Future<void> _invoke(
-      Future<void> Function(BarcodeReader reader) callback) async {
+  Future<bool> _invoke(
+    Future<void> Function(BarcodeReader reader) callback,
+  ) async {
     if (_barcodeReader == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Unsupported device.')),
       );
-    } else {
-      try {
-        await callback(_barcodeReader!);
-      } on PlatformException catch (e) {
-        error = '${e.message} (${e.code}) (${e.details})';
-        if (mounted) setState(() {});
-      }
+      return false;
     }
+
+    try {
+      await callback(_barcodeReader!);
+    } on PlatformException catch (e) {
+      error = '${e.message} (${e.code}) (${e.details})';
+      if (mounted) setState(() {});
+    }
+    return true;
   }
 }

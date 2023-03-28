@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:honeywell_mobility_sdk/honeywell_mobility_sdk.dart';
 import 'package:honeywell_mobility_sdk/src/barcode_reader_api.dart';
 
 typedef BarcodeEventCallback<T> = void Function(T event);
@@ -45,8 +46,12 @@ class BarcodeReader implements BarcodeReaderFlutterApi {
   Future<void> release() => _api.release();
 
   /// {@macro honeywell.reader.setProperties}
-  Future<void> setProperties(Set<MapEntry<String, Object>> properties) {
-    return _api.setProperties(Map.fromEntries(properties));
+  Future<void> setProperties(Set<BarcodeReaderPropertyEntry> properties) {
+    return _api.setProperties(
+      {
+        for (final property in properties) property.key: property.value,
+      },
+    );
   }
 
   /// {@macro honeywell.reader.softwareTrigger}

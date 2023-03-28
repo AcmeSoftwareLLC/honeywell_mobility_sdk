@@ -3,29 +3,43 @@ class BarcodeReaderProperty<T extends Object> {
 
   final String key;
 
-  MapEntry<String, Object> call(T value) {
-    if (value is Enum) return MapEntry(key, value.name);
-    return MapEntry(key, value);
+  BarcodeReaderPropertyEntry<T> call(T value) {
+    return BarcodeReaderPropertyEntry(key, value);
   }
 
-  static const BarcodeReaderImagerProperties imager =
-      BarcodeReaderImagerProperties();
+  static const BarcodeReaderImagerPropertyGroup imager =
+      BarcodeReaderImagerPropertyGroup();
 
-  static const BarcodeReaderNotificationProperties notification =
-      BarcodeReaderNotificationProperties();
+  static const BarcodeReaderNotificationPropertyGroup notification =
+      BarcodeReaderNotificationPropertyGroup();
 
-  static const BarcodeReaderTriggerProperties trigger =
-      BarcodeReaderTriggerProperties();
+  static const BarcodeReaderTriggerPropertyGroup trigger =
+      BarcodeReaderTriggerPropertyGroup();
 
-  static const BarcodeReaderSymbologyProperties symbology =
-      BarcodeReaderSymbologyProperties();
+  static const BarcodeReaderSymbologyPropertyGroup symbology =
+      BarcodeReaderSymbologyPropertyGroup();
 
-  static const BarcodeReaderDataProcessingProperties dataProcessing =
-      BarcodeReaderDataProcessingProperties();
+  static const BarcodeReaderDataProcessingPropertyGroup dataProcessing =
+      BarcodeReaderDataProcessingPropertyGroup();
 }
 
-class BarcodeReaderImagerProperties {
-  const BarcodeReaderImagerProperties();
+class BarcodeReaderPropertyEntry<T extends Object> {
+  const BarcodeReaderPropertyEntry(this.key, this._value);
+
+  final String key;
+  final T _value;
+
+  Object get value {
+    final value = _value;
+    return value is Enum ? value.name : value;
+  }
+
+  @override
+  String toString() => 'BarcodeReaderPropertyEntry($key, $value)';
+}
+
+class BarcodeReaderImagerPropertyGroup {
+  const BarcodeReaderImagerPropertyGroup();
 
   /// Maximum exposure time in microseconds when using automatic exposure.
   final BarcodeReaderProperty<int> lightIntensity =
@@ -72,8 +86,8 @@ class BarcodeReaderImagerProperties {
       const BarcodeReaderProperty('IMG_SAMPLE_METHOD');
 }
 
-class BarcodeReaderNotificationProperties {
-  const BarcodeReaderNotificationProperties();
+class BarcodeReaderNotificationPropertyGroup {
+  const BarcodeReaderNotificationPropertyGroup();
 
   /// Good Read Notification Enable/Disable.
   /// This setting determines whether the Good Read Beep and LED will play on successful decode.
@@ -92,8 +106,8 @@ class BarcodeReaderNotificationProperties {
       const BarcodeReaderProperty('NTF_VIBRATE_ENABLED');
 }
 
-class BarcodeReaderTriggerProperties {
-  const BarcodeReaderTriggerProperties();
+class BarcodeReaderTriggerPropertyGroup {
+  const BarcodeReaderTriggerPropertyGroup();
 
   /// Trigger control mode.
   /// This setting determines what the behavior will be when the scan trigger state changes.
@@ -120,8 +134,8 @@ class BarcodeReaderTriggerProperties {
       const BarcodeReaderProperty('TRIG_SCAN_MODE');
 }
 
-class BarcodeReaderSymbologyProperties {
-  const BarcodeReaderSymbologyProperties();
+class BarcodeReaderSymbologyPropertyGroup {
+  const BarcodeReaderSymbologyPropertyGroup();
 
   /// Enable or disable Code 128 FNC4.
   final BarcodeReaderProperty<bool> code128FNC4 =
@@ -222,8 +236,8 @@ class BarcodeReaderSymbologyProperties {
       const BarcodeReaderProperty('DEC_I25_ENABLED');
 }
 
-class BarcodeReaderDataProcessingProperties {
-  const BarcodeReaderDataProcessingProperties();
+class BarcodeReaderDataProcessingPropertyGroup {
+  const BarcodeReaderDataProcessingPropertyGroup();
 
   /// Data added to the beginning of the bar code data.
   final BarcodeReaderProperty<String> prefix =
