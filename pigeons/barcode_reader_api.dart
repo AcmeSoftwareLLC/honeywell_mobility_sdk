@@ -3,6 +3,7 @@ import 'package:pigeon/pigeon.dart';
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/src/barcode_reader_api.dart',
+    dartTestOut: 'test/barcode_reader_api.g.dart',
     kotlinOut:
         'android/src/main/kotlin/com/acmesoftware/honeywell_mobility_sdk/api/BarcodeReaderApi.kt',
     kotlinOptions: KotlinOptions(
@@ -11,12 +12,7 @@ import 'package:pigeon/pigeon.dart';
     copyrightHeader: 'pigeons/copyright.txt',
   ),
 )
-class TestMessage {
-  TestMessage(this.message);
-  String message;
-}
-
-@HostApi()
+@HostApi(dartHostTestHandler: 'TestBarcodeReaderApi')
 abstract class BarcodeReaderApi {
   /// {@template honeywell.reader.aim}
   /// Sets the aiming state of the scanner.
@@ -91,6 +87,8 @@ abstract class BarcodeReaderFlutterApi {
   void onBarcodeEvent(BarcodeReadEvent event);
 
   void onFailureEvent(BarcodeFailureEvent event);
+
+  void onTriggerEvent(TriggerStateChangeEvent event);
 }
 
 class BarcodeReadEvent {
@@ -113,4 +111,10 @@ class BarcodeFailureEvent {
   BarcodeFailureEvent({required this.timestamp});
 
   final String timestamp;
+}
+
+class TriggerStateChangeEvent {
+  TriggerStateChangeEvent({required this.state});
+
+  final bool state;
 }

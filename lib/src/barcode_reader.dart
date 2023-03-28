@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:honeywell_mobility_sdk/src/barcode_reader_api.dart';
-import 'package:honeywell_mobility_sdk/src/barcode_reader_property.dart';
 
 typedef BarcodeEventCallback<T> = void Function(T event);
 
@@ -9,13 +8,18 @@ class BarcodeReader implements BarcodeReaderFlutterApi {
     required BarcodeReaderApi api,
     required BarcodeEventCallback<BarcodeReadEvent> onRead,
     required BarcodeEventCallback<BarcodeFailureEvent> onFailure,
+    BarcodeEventCallback<TriggerStateChangeEvent>? onTrigger,
   })  : _api = api,
         _onRead = onRead,
-        _onFailure = onFailure;
+        _onFailure = onFailure,
+        _onTrigger = onTrigger {
+    BarcodeReaderFlutterApi.setup(this);
+  }
 
   final BarcodeReaderApi _api;
   final BarcodeEventCallback<BarcodeReadEvent> _onRead;
   final BarcodeEventCallback<BarcodeFailureEvent> _onFailure;
+  final BarcodeEventCallback<TriggerStateChangeEvent>? _onTrigger;
 
   /// {@macro honeywell.reader.aim}
   Future<void> aim(bool on) => _api.aim(on);
@@ -55,6 +59,10 @@ class BarcodeReader implements BarcodeReaderFlutterApi {
   @override
   @protected
   void onFailureEvent(BarcodeFailureEvent event) => _onFailure(event);
+
+  @override
+  @protected
+  void onTriggerEvent(TriggerStateChangeEvent event) => _onTrigger?.call(event);
 }
 
 enum BarcodeReaderNotification {

@@ -73,6 +73,27 @@ class BarcodeFailureEvent {
   }
 }
 
+class TriggerStateChangeEvent {
+  TriggerStateChangeEvent({
+    required this.state,
+  });
+
+  bool state;
+
+  Object encode() {
+    return <Object?>[
+      state,
+    ];
+  }
+
+  static TriggerStateChangeEvent decode(Object result) {
+    result as List<Object?>;
+    return TriggerStateChangeEvent(
+      state: result[0]! as bool,
+    );
+  }
+}
+
 class _BarcodeReaderApiCodec extends StandardMessageCodec {
   const _BarcodeReaderApiCodec();
   @override
@@ -82,6 +103,9 @@ class _BarcodeReaderApiCodec extends StandardMessageCodec {
       writeValue(buffer, value.encode());
     } else if (value is BarcodeReadEvent) {
       buffer.putUint8(129);
+      writeValue(buffer, value.encode());
+    } else if (value is TriggerStateChangeEvent) {
+      buffer.putUint8(130);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -95,6 +119,8 @@ class _BarcodeReaderApiCodec extends StandardMessageCodec {
         return BarcodeFailureEvent.decode(readValue(buffer)!);
       case 129: 
         return BarcodeReadEvent.decode(readValue(buffer)!);
+      case 130: 
+        return TriggerStateChangeEvent.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
     }
@@ -394,6 +420,9 @@ class _BarcodeReaderFlutterApiCodec extends StandardMessageCodec {
     } else if (value is BarcodeReadEvent) {
       buffer.putUint8(129);
       writeValue(buffer, value.encode());
+    } else if (value is TriggerStateChangeEvent) {
+      buffer.putUint8(130);
+      writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
     }
@@ -406,6 +435,8 @@ class _BarcodeReaderFlutterApiCodec extends StandardMessageCodec {
         return BarcodeFailureEvent.decode(readValue(buffer)!);
       case 129: 
         return BarcodeReadEvent.decode(readValue(buffer)!);
+      case 130: 
+        return TriggerStateChangeEvent.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
     }
@@ -418,6 +449,8 @@ abstract class BarcodeReaderFlutterApi {
   void onBarcodeEvent(BarcodeReadEvent event);
 
   void onFailureEvent(BarcodeFailureEvent event);
+
+  void onTriggerEvent(TriggerStateChangeEvent event);
 
   static void setup(BarcodeReaderFlutterApi? api, {BinaryMessenger? binaryMessenger}) {
     {
@@ -454,6 +487,25 @@ abstract class BarcodeReaderFlutterApi {
           assert(arg_event != null,
               'Argument for dev.flutter.pigeon.BarcodeReaderFlutterApi.onFailureEvent was null, expected non-null BarcodeFailureEvent.');
           api.onFailureEvent(arg_event!);
+          return;
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.BarcodeReaderFlutterApi.onTriggerEvent', codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object? message) async {
+          assert(message != null,
+          'Argument for dev.flutter.pigeon.BarcodeReaderFlutterApi.onTriggerEvent was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final TriggerStateChangeEvent? arg_event = (args[0] as TriggerStateChangeEvent?);
+          assert(arg_event != null,
+              'Argument for dev.flutter.pigeon.BarcodeReaderFlutterApi.onTriggerEvent was null, expected non-null TriggerStateChangeEvent.');
+          api.onTriggerEvent(arg_event!);
           return;
         });
       }

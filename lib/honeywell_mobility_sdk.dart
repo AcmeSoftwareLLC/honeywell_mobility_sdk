@@ -8,12 +8,18 @@ class HoneywellMobilitySdk {
   static Future<BarcodeReader?> createBarcodeReader({
     required BarcodeEventCallback<BarcodeReadEvent> onRead,
     required BarcodeEventCallback<BarcodeFailureEvent> onFailure,
+    BarcodeEventCallback<TriggerStateChangeEvent>? onTrigger,
   }) async {
     final api = BarcodeReaderApi();
     final isSupported = await api.create();
 
     if (!isSupported) return null;
 
-    return BarcodeReader(api: api, onRead: onRead, onFailure: onFailure);
+    return BarcodeReader(
+      api: api,
+      onRead: onRead,
+      onFailure: onFailure,
+      onTrigger: onTrigger,
+    );
   }
 }

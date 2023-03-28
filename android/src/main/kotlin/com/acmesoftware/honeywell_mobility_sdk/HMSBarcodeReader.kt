@@ -5,7 +5,7 @@ import com.honeywell.aidc.BarcodeReader
 import io.flutter.plugin.common.BinaryMessenger
 
 class HMSBarcodeReader(messenger: BinaryMessenger) : BarcodeReaderApi,
-    BarcodeReader.BarcodeListener {
+    BarcodeReader.BarcodeListener, BarcodeReader.TriggerListener {
     private lateinit var reader: BarcodeReader
     private var manager: AidcManager? = null
     private val flutterApi = BarcodeReaderFlutterApi(messenger)
@@ -25,6 +25,7 @@ class HMSBarcodeReader(messenger: BinaryMessenger) : BarcodeReaderApi,
 
         reader = manager!!.createBarcodeReader()
         reader.addBarcodeListener(this)
+        reader.addTriggerListener(this)
         return true
     }
 
@@ -41,6 +42,11 @@ class HMSBarcodeReader(messenger: BinaryMessenger) : BarcodeReaderApi,
 
     override fun onFailureEvent(event: com.honeywell.aidc.BarcodeFailureEvent) {
         flutterApi.onFailureEvent(BarcodeFailureEvent(event.timestamp)) {}
+    }
+
+
+    override fun onTriggerEvent(event: com.honeywell.aidc.TriggerStateChangeEvent) {
+        flutterApi.onTriggerEvent(TriggerStateChangeEvent(event.state)) {}
     }
 
     override fun aim(on: Boolean) {

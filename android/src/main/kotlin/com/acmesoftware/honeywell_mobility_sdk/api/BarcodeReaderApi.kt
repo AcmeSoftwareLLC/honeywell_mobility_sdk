@@ -95,6 +95,25 @@ data class BarcodeFailureEvent (
     )
   }
 }
+
+/** Generated class from Pigeon that represents data sent in messages. */
+data class TriggerStateChangeEvent (
+  val state: Boolean
+
+) {
+  companion object {
+    @Suppress("UNCHECKED_CAST")
+    fun fromList(list: List<Any?>): TriggerStateChangeEvent {
+      val state = list[0] as Boolean
+      return TriggerStateChangeEvent(state)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf<Any?>(
+      state,
+    )
+  }
+}
 @Suppress("UNCHECKED_CAST")
 private object BarcodeReaderApiCodec : StandardMessageCodec() {
   override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? {
@@ -109,6 +128,11 @@ private object BarcodeReaderApiCodec : StandardMessageCodec() {
           BarcodeReadEvent.fromList(it)
         }
       }
+      130.toByte() -> {
+        return (readValue(buffer) as? List<Any?>)?.let {
+          TriggerStateChangeEvent.fromList(it)
+        }
+      }
       else -> super.readValueOfType(type, buffer)
     }
   }
@@ -120,6 +144,10 @@ private object BarcodeReaderApiCodec : StandardMessageCodec() {
       }
       is BarcodeReadEvent -> {
         stream.write(129)
+        writeValue(stream, value.toList())
+      }
+      is TriggerStateChangeEvent -> {
+        stream.write(130)
         writeValue(stream, value.toList())
       }
       else -> super.writeValue(stream, value)
@@ -413,6 +441,11 @@ private object BarcodeReaderFlutterApiCodec : StandardMessageCodec() {
           BarcodeReadEvent.fromList(it)
         }
       }
+      130.toByte() -> {
+        return (readValue(buffer) as? List<Any?>)?.let {
+          TriggerStateChangeEvent.fromList(it)
+        }
+      }
       else -> super.readValueOfType(type, buffer)
     }
   }
@@ -424,6 +457,10 @@ private object BarcodeReaderFlutterApiCodec : StandardMessageCodec() {
       }
       is BarcodeReadEvent -> {
         stream.write(129)
+        writeValue(stream, value.toList())
+      }
+      is TriggerStateChangeEvent -> {
+        stream.write(130)
         writeValue(stream, value.toList())
       }
       else -> super.writeValue(stream, value)
@@ -448,6 +485,12 @@ class BarcodeReaderFlutterApi(private val binaryMessenger: BinaryMessenger) {
   }
   fun onFailureEvent(eventArg: BarcodeFailureEvent, callback: () -> Unit) {
     val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.BarcodeReaderFlutterApi.onFailureEvent", codec)
+    channel.send(listOf(eventArg)) {
+      callback()
+    }
+  }
+  fun onTriggerEvent(eventArg: TriggerStateChangeEvent, callback: () -> Unit) {
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.BarcodeReaderFlutterApi.onTriggerEvent", codec)
     channel.send(listOf(eventArg)) {
       callback()
     }
