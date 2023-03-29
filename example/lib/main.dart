@@ -80,27 +80,6 @@ class _ScannerPageState extends State<ScannerPage> {
         if (mounted) setState(() {});
       },
     );
-
-    final properties = {
-      BarcodeReaderProperty.trigger.controlMode(TriggerControlMode.autoControl),
-      BarcodeReaderProperty.dataProcessing.launchBrowser(false),
-      BarcodeReaderProperty.symbology.aztec(true),
-      BarcodeReaderProperty.symbology.codebar(true),
-      BarcodeReaderProperty.symbology.code39(true),
-      BarcodeReaderProperty.symbology.code93(true),
-      BarcodeReaderProperty.symbology.code128(true),
-      BarcodeReaderProperty.symbology.dataMatrix(true),
-      BarcodeReaderProperty.symbology.ean8(true),
-      BarcodeReaderProperty.symbology.ean13(true),
-      BarcodeReaderProperty.symbology.maxiCode(true),
-      BarcodeReaderProperty.symbology.pdf417(true),
-      BarcodeReaderProperty.symbology.qrCode(true),
-      BarcodeReaderProperty.symbology.rss(true),
-      BarcodeReaderProperty.symbology.rssExpanded(true),
-      BarcodeReaderProperty.symbology.upca(true),
-      BarcodeReaderProperty.symbology.upce(true),
-    };
-    _barcodeReader?.setProperties(properties);
   }
 
   @override
@@ -126,30 +105,7 @@ class _ScannerPageState extends State<ScannerPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Card(
-              color: data == null ? Colors.red.shade300 : Colors.green.shade300,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Text(
-                      'Data: $data',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Trigger: $trigger',
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Error At: $error',
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            _ResultCard(data: data, trigger: trigger, error: error),
             const SizedBox(height: 16),
             DropdownMenu(
               leadingIcon: const Icon(Icons.barcode_reader),
@@ -170,56 +126,48 @@ class _ScannerPageState extends State<ScannerPage> {
               ],
             ),
             const SizedBox(height: 16),
-            FilledButton(
-              onPressed: _activeOn([
-                ScannerAction.none,
-                ScannerAction.release,
-              ])
-                  ? () async {
-                      final supported = await _invoke(
-                        (reader) => reader.claim(),
-                      );
-
-                      if (supported) _updateAction(ScannerAction.claim);
-                    }
-                  : null,
-              child: const Text('Claim'),
+            _Button(
+              label: 'Claim',
+              enableFor: const [ScannerAction.none, ScannerAction.release],
+              action: action,
+              onPressed: () async {
+                final supported = await _invoke((reader) => reader.claim());
+                if (supported) _updateAction(ScannerAction.claim);
+              },
             ),
-            FilledButton(
-              onPressed: _activeOn([
+            _Button(
+              label: 'Start Scanning',
+              enableFor: const [
                 ScannerAction.claim,
-                ScannerAction.stopScanning,
-              ])
-                  ? () async {
-                      await _invoke((reader) => reader.softwareTrigger(true));
-                      _updateAction(ScannerAction.startScanning);
-                    }
-                  : null,
-              child: const Text('Start Scanning'),
+                ScannerAction.stopScanning
+              ],
+              action: action,
+              onPressed: () async {
+                await _invoke((reader) => reader.softwareTrigger(true));
+                _updateAction(ScannerAction.startScanning);
+              },
             ),
-            FilledButton(
-              onPressed: _activeOn([ScannerAction.startScanning])
-                  ? () async {
-                      await _invoke((reader) => reader.softwareTrigger(false));
-                      _updateAction(ScannerAction.stopScanning);
-                    }
-                  : null,
-              child: const Text('Pause Scanning'),
+            _Button(
+              label: 'Pause Scanning',
+              enableFor: const [ScannerAction.startScanning],
+              action: action,
+              onPressed: () async {
+                await _invoke((reader) => reader.softwareTrigger(false));
+                _updateAction(ScannerAction.stopScanning);
+              },
             ),
-            FilledButton(
-              onPressed: _activeOn(
-                [
-                  ScannerAction.claim,
-                  ScannerAction.startScanning,
-                  ScannerAction.stopScanning
-                ],
-              )
-                  ? () async {
-                      await _invoke((reader) => reader.release());
-                      _updateAction(ScannerAction.release);
-                    }
-                  : null,
-              child: const Text('Release'),
+            _Button(
+              label: 'Release',
+              enableFor: const [
+                ScannerAction.claim,
+                ScannerAction.startScanning,
+                ScannerAction.stopScanning
+              ],
+              action: action,
+              onPressed: () async {
+                await _invoke((reader) => reader.release());
+                _updateAction(ScannerAction.release);
+              },
             ),
             FilledButton(
               onPressed: () => Navigator.pop(context),
@@ -229,10 +177,6 @@ class _ScannerPageState extends State<ScannerPage> {
         ),
       ),
     );
-  }
-
-  bool _activeOn(List<ScannerAction> actions) {
-    return actions.contains(action);
   }
 
   void _updateAction(ScannerAction action) {
@@ -257,5 +201,71 @@ class _ScannerPageState extends State<ScannerPage> {
       if (mounted) setState(() {});
     }
     return true;
+  }
+}
+
+class _ResultCard extends StatelessWidget {
+  const _ResultCard({
+    required this.data,
+    required this.trigger,
+    required this.error,
+  });
+
+  final String? data;
+  final String? trigger;
+  final String? error;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: data == null ? Colors.red.shade300 : Colors.green.shade300,
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          children: [
+            Text(
+              'Data: $data',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Trigger: $trigger',
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Error At: $error',
+              style: Theme.of(context).textTheme.labelMedium,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Button extends StatelessWidget {
+  const _Button({
+    required this.label,
+    required this.enableFor,
+    required this.action,
+    required this.onPressed,
+  });
+
+  final String label;
+  final List<ScannerAction> enableFor;
+  final ScannerAction action;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton(
+      onPressed: _activeOn(enableFor) ? onPressed : null,
+      child: Text(label),
+    );
+  }
+
+  bool _activeOn(List<ScannerAction> actions) {
+    return actions.contains(action);
   }
 }
