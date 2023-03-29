@@ -1,3 +1,4 @@
-## 0.0.1
-
-* TODO: Describe initial release.
+# Changelog
+## 1.0.0
+**Mar 29, 2023**
+- Initial Release.

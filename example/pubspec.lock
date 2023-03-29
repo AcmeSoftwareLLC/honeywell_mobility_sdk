@@ -137,7 +137,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.1"
+    version: "1.0.0"
   js:
     dependency: transitive
     description:
@@ -198,10 +198,10 @@ packages:
     dependency: transitive
     description:
       name: pigeon
-      sha256: b0d76d5784a4dda4a251b9aaebb66bdd05f40d41989b9390d7067754bb57645f
+      sha256: "94d82d52ad03665b062a88908885a777766dcf5685836d6d2bce8294744d4125"
       url: "https://pub.dev"
     source: hosted
-    version: "9.1.1"
+    version: "9.1.2"
   plugin_platform_interface:
     dependency: transitive
     description:

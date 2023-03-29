@@ -26,12 +26,32 @@ final barcodeReader = await HoneywellMobilitySdk.createBarcodeReader(
   },
 );
 
-barcodeReader?.setProperties({
-  BarcodeReaderProperty.trigger.controlMode(TriggerControlMode.autoControl),
-  BarcodeReaderProperty.dataProcessing.launchBrowser(false),
-  BarcodeReaderProperty.symbology.aztec(true),
-});
-
-barcodeReader?.claim();
+barcodeReader.claim(); // Once claiming the barcode reader, the callbacks will be active.
 ```
 
+**Note:** The barcode reader will be null if the device does not support the barcode scanning.
+
+### Scanning with software trigger
+```dart
+// true behaves as if the trigger was pressed, false behaves as if the trigger was released
+barcodeReader.softwareTrigger(true|false);
+```
+
+### Handling lifecycle changes
+```dart
+@override
+void didChangeAppLifecycleState(AppLifecycleState state) {
+  switch (state) {
+    case AppLifecycleState.resumed:
+      barcodeReader.claim();
+      break;
+    case AppLifecycleState.inactive:
+    case AppLifecycleState.paused:
+      barcodeReader.release();
+      break;
+    case AppLifecycleState.detached:
+      barcodeReader.close();
+      break;
+  }
+}
+```

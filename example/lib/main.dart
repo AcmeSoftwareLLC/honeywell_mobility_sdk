@@ -50,7 +50,7 @@ class ScannerPage extends StatefulWidget {
   State<ScannerPage> createState() => _ScannerPageState();
 }
 
-class _ScannerPageState extends State<ScannerPage> {
+class _ScannerPageState extends State<ScannerPage> with WidgetsBindingObserver {
   BarcodeReader? _barcodeReader;
   String? data;
   String? error;
@@ -61,6 +61,7 @@ class _ScannerPageState extends State<ScannerPage> {
   void initState() {
     super.initState();
     _initReader();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   Future<void> _initReader() async {
@@ -83,7 +84,24 @@ class _ScannerPageState extends State<ScannerPage> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        _barcodeReader?.claim();
+        break;
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+        _barcodeReader?.release();
+        break;
+      case AppLifecycleState.detached:
+        _barcodeReader?.close();
+        break;
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _barcodeReader?.close();
     super.dispose();
   }
