@@ -55,3 +55,5 @@ void didChangeAppLifecycleState(AppLifecycleState state) {
   }
 }
 ```
+
+[See the example app](https://github.com/AcmeSoftwareLLC/honeywell_mobility_sdk/tree/main/example) for more details.
