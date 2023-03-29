@@ -116,11 +116,11 @@ class _BarcodeReaderApiCodec extends StandardMessageCodec {
   @override
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
-      case 128: 
+      case 128:
         return BarcodeFailureEvent.decode(readValue(buffer)!);
-      case 129: 
+      case 129:
         return BarcodeReadEvent.decode(readValue(buffer)!);
-      case 130: 
+      case 130:
         return TriggerStateChangeEvent.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -178,8 +178,7 @@ class BarcodeReaderApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.BarcodeReaderApi.claim', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -207,8 +206,7 @@ class BarcodeReaderApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.BarcodeReaderApi.close', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -232,8 +230,7 @@ class BarcodeReaderApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.BarcodeReaderApi.create', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -340,8 +337,7 @@ class BarcodeReaderApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.BarcodeReaderApi.release', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -457,11 +453,11 @@ class _BarcodeReaderFlutterApiCodec extends StandardMessageCodec {
   @override
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
-      case 128: 
+      case 128:
         return BarcodeFailureEvent.decode(readValue(buffer)!);
-      case 129: 
+      case 129:
         return BarcodeReadEvent.decode(readValue(buffer)!);
-      case 130: 
+      case 130:
         return TriggerStateChangeEvent.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -478,7 +474,8 @@ abstract class BarcodeReaderFlutterApi {
 
   void onTriggerEvent(TriggerStateChangeEvent event);
 
-  static void setup(BarcodeReaderFlutterApi? api, {BinaryMessenger? binaryMessenger}) {
+  static void setup(BarcodeReaderFlutterApi? api,
+      {BinaryMessenger? binaryMessenger}) {
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
           'dev.flutter.pigeon.BarcodeReaderFlutterApi.onBarcodeEvent', codec,
@@ -488,7 +485,7 @@ abstract class BarcodeReaderFlutterApi {
       } else {
         channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.BarcodeReaderFlutterApi.onBarcodeEvent was null.');
+              'Argument for dev.flutter.pigeon.BarcodeReaderFlutterApi.onBarcodeEvent was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final BarcodeReadEvent? arg_event = (args[0] as BarcodeReadEvent?);
           assert(arg_event != null,
@@ -507,9 +504,10 @@ abstract class BarcodeReaderFlutterApi {
       } else {
         channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.BarcodeReaderFlutterApi.onFailureEvent was null.');
+              'Argument for dev.flutter.pigeon.BarcodeReaderFlutterApi.onFailureEvent was null.');
           final List<Object?> args = (message as List<Object?>?)!;
-          final BarcodeFailureEvent? arg_event = (args[0] as BarcodeFailureEvent?);
+          final BarcodeFailureEvent? arg_event =
+              (args[0] as BarcodeFailureEvent?);
           assert(arg_event != null,
               'Argument for dev.flutter.pigeon.BarcodeReaderFlutterApi.onFailureEvent was null, expected non-null BarcodeFailureEvent.');
           api.onFailureEvent(arg_event!);
@@ -526,9 +524,10 @@ abstract class BarcodeReaderFlutterApi {
       } else {
         channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.BarcodeReaderFlutterApi.onTriggerEvent was null.');
+              'Argument for dev.flutter.pigeon.BarcodeReaderFlutterApi.onTriggerEvent was null.');
           final List<Object?> args = (message as List<Object?>?)!;
-          final TriggerStateChangeEvent? arg_event = (args[0] as TriggerStateChangeEvent?);
+          final TriggerStateChangeEvent? arg_event =
+              (args[0] as TriggerStateChangeEvent?);
           assert(arg_event != null,
               'Argument for dev.flutter.pigeon.BarcodeReaderFlutterApi.onTriggerEvent was null, expected non-null TriggerStateChangeEvent.');
           api.onTriggerEvent(arg_event!);

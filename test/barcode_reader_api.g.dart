@@ -35,11 +35,11 @@ class _TestBarcodeReaderApiCodec extends StandardMessageCodec {
   @override
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
-      case 128: 
+      case 128:
         return BarcodeFailureEvent.decode(readValue(buffer)!);
-      case 129: 
+      case 129:
         return BarcodeReadEvent.decode(readValue(buffer)!);
-      case 130: 
+      case 130:
         return TriggerStateChangeEvent.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -122,7 +122,8 @@ abstract class TestBarcodeReaderApi {
   /// {@endtemplate}
   void softwareTrigger(bool state);
 
-  static void setup(TestBarcodeReaderApi? api, {BinaryMessenger? binaryMessenger}) {
+  static void setup(TestBarcodeReaderApi? api,
+      {BinaryMessenger? binaryMessenger}) {
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
           'dev.flutter.pigeon.BarcodeReaderApi.aim', codec,
@@ -132,7 +133,7 @@ abstract class TestBarcodeReaderApi {
       } else {
         channel.setMockMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.BarcodeReaderApi.aim was null.');
+              'Argument for dev.flutter.pigeon.BarcodeReaderApi.aim was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final bool? arg_on = (args[0] as bool?);
           assert(arg_on != null,
@@ -193,7 +194,7 @@ abstract class TestBarcodeReaderApi {
       } else {
         channel.setMockMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.BarcodeReaderApi.decode was null.');
+              'Argument for dev.flutter.pigeon.BarcodeReaderApi.decode was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final bool? arg_on = (args[0] as bool?);
           assert(arg_on != null,
@@ -212,7 +213,7 @@ abstract class TestBarcodeReaderApi {
       } else {
         channel.setMockMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.BarcodeReaderApi.light was null.');
+              'Argument for dev.flutter.pigeon.BarcodeReaderApi.light was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final bool? arg_on = (args[0] as bool?);
           assert(arg_on != null,
@@ -231,7 +232,7 @@ abstract class TestBarcodeReaderApi {
       } else {
         channel.setMockMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.BarcodeReaderApi.notify was null.');
+              'Argument for dev.flutter.pigeon.BarcodeReaderApi.notify was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final String? arg_notification = (args[0] as String?);
           assert(arg_notification != null,
@@ -264,7 +265,7 @@ abstract class TestBarcodeReaderApi {
       } else {
         channel.setMockMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.BarcodeReaderApi.setProperty was null.');
+              'Argument for dev.flutter.pigeon.BarcodeReaderApi.setProperty was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final String? arg_key = (args[0] as String?);
           assert(arg_key != null,
@@ -286,9 +287,10 @@ abstract class TestBarcodeReaderApi {
       } else {
         channel.setMockMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.BarcodeReaderApi.setProperties was null.');
+              'Argument for dev.flutter.pigeon.BarcodeReaderApi.setProperties was null.');
           final List<Object?> args = (message as List<Object?>?)!;
-          final Map<String?, Object?>? arg_properties = (args[0] as Map<Object?, Object?>?)?.cast<String?, Object?>();
+          final Map<String?, Object?>? arg_properties =
+              (args[0] as Map<Object?, Object?>?)?.cast<String?, Object?>();
           assert(arg_properties != null,
               'Argument for dev.flutter.pigeon.BarcodeReaderApi.setProperties was null, expected non-null Map<String?, Object?>.');
           api.setProperties(arg_properties!);
@@ -305,7 +307,7 @@ abstract class TestBarcodeReaderApi {
       } else {
         channel.setMockMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.BarcodeReaderApi.softwareTrigger was null.');
+              'Argument for dev.flutter.pigeon.BarcodeReaderApi.softwareTrigger was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final bool? arg_state = (args[0] as bool?);
           assert(arg_state != null,
