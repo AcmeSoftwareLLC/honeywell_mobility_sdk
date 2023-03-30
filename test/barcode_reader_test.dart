@@ -70,7 +70,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('BarcodeReader tests |', () {
-    final BarcodeReader reader = BarcodeReader(
+    final reader = BarcodeReader(
       api: BarcodeReaderApi(),
       onRead: (_) {},
       onFailure: (_) {},

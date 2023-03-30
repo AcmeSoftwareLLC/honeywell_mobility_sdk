@@ -2,9 +2,15 @@ import 'package:flutter/foundation.dart';
 import 'package:honeywell_mobility_sdk/honeywell_mobility_sdk.dart';
 import 'package:honeywell_mobility_sdk/src/barcode_reader_api.dart';
 
+/// Signature for callbacks that report barcode events.
 typedef BarcodeEventCallback<T> = void Function(T event);
 
+/// A claimed scanner will emit [BarcodeReadEvent]
+/// when a bar code label has been successfully decoded.
+///
+/// This event will contain all information pertaining to this successful decode
 class BarcodeReader implements BarcodeReaderFlutterApi {
+  /// Creates a new [BarcodeReader] instance.
   BarcodeReader({
     required BarcodeReaderApi api,
     required BarcodeEventCallback<BarcodeReadEvent> onRead,
@@ -75,12 +81,18 @@ class BarcodeReader implements BarcodeReaderFlutterApi {
   void onTriggerEvent(TriggerStateChangeEvent event) => _onTrigger?.call(event);
 }
 
+/// A barcode reader notification type.
 enum BarcodeReaderNotification {
+  /// The Good Read Beep and LED will play.
   good('goodRead'),
+
+  /// The Bad Read Beep and LED will play.
   bad('badRead');
 
+  /// Creates a new [BarcodeReaderNotification] instance.
   const BarcodeReaderNotification(this.name);
 
+  /// The name of the notification.
   final String name;
 }
 
@@ -130,6 +142,8 @@ final Map<String, String> _codeTypes = {
   '?': 'Korea Post',
 };
 
-extension BarcodeReaderExtension on BarcodeReadEvent {
+/// Barcoded Read Event Extension
+extension BarcodeReadEventExtension on BarcodeReadEvent {
+  /// Returns the code type of the barcode.
   String get codeType => _codeTypes[codeId] ?? 'Unknown';
 }

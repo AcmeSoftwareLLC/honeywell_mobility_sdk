@@ -25,10 +25,7 @@ abstract class BarcodeReaderApi {
   /// Client activities should call this method in onResume() to ensure that
   /// the scanner is claimed before making any calls to control the scanner.
   ///
-  /// Calls to control the scanner such as [decode]
-  /// will throw [PlatformException] if claim() has not been called.
-  ///
-  /// Once claimed, the scanner will begin to post events to registered event listeners.
+  /// Once claimed, the reader will receive scanner callbacks..
   /// {@endtemplate}
   void claim();
 
@@ -57,7 +54,8 @@ abstract class BarcodeReaderApi {
   void light(bool on);
 
   /// {@template honeywell.reader.notify}
-  /// Use the BarcodeReader's built-in mechanism for notifying the user of events.
+  /// Use the BarcodeReader's built-in mechanism
+  /// for notifying the user of events.
   /// {@endtemplate}
   void notify(String notification);
 

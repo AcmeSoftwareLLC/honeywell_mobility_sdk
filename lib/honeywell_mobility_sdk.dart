@@ -5,7 +5,14 @@ import 'package:honeywell_mobility_sdk/src/barcode_reader_property.dart';
 export 'src/barcode_reader.dart';
 export 'src/barcode_reader_property.dart';
 
-class HoneywellMobilitySdk {
+/// Honeywell Mobility SDK for Flutter.
+abstract class HoneywellMobilitySdk {
+  /// This attempts to instantiate a [BarcodeReader].
+  /// If an error occurs, an exception describing the error will be thrown.
+  ///
+  /// The returned BarcodeReader object represents a session associated
+  /// with the internal scanner in case of handheld devices
+  /// or external scanner connected on COM1 port in case of VM1A.
   static Future<BarcodeReader?> createBarcodeReader({
     required BarcodeEventCallback<BarcodeReadEvent> onRead,
     required BarcodeEventCallback<BarcodeFailureEvent> onFailure,
@@ -25,7 +32,7 @@ class HoneywellMobilitySdk {
     );
 
     if (defaultProperties) {
-      reader.setProperties({
+      await reader.setProperties({
         BarcodeReaderProperty.trigger.controlMode(
           TriggerControlMode.autoControl,
         ),
